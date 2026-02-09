@@ -1093,6 +1093,49 @@ function App() {
     loadInitialData();
   }, []);
 
+  // Supabase Realtime subscription for live updates
+  useEffect(() => {
+    // Subscribe to posts changes
+    const postsChannel = supabase
+      .channel('posts-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'posts' },
+        async (payload) => {
+          console.log('Realtime posts change:', payload);
+          // Refresh all posts and current session posts
+          const updatedPosts = await getAllPostsFromDB();
+          setAllPosts(updatedPosts);
+          if (currentSessionId) {
+            const sessionPosts = await getPostsFromDB(currentSessionId);
+            setPosts(sessionPosts);
+          }
+        }
+      )
+      .subscribe();
+
+    // Subscribe to sessions changes
+    const sessionsChannel = supabase
+      .channel('sessions-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'sessions' },
+        async (payload) => {
+          console.log('Realtime sessions change:', payload);
+          // Refresh sessions
+          const updatedSessions = await getSessionsFromDB();
+          setSessions(updatedSessions);
+        }
+      )
+      .subscribe();
+
+    // Cleanup on unmount
+    return () => {
+      supabase.removeChannel(postsChannel);
+      supabase.removeChannel(sessionsChannel);
+    };
+  }, [currentSessionId]);
+
   // Load posts for current session
   useEffect(() => {
     async function loadSessionPosts() {
