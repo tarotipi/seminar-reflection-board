@@ -1,9 +1,13 @@
 -- Supabase Schema for Seminar Reflection Board
 -- Run this in Supabase SQL Editor
 
+-- Drop existing tables if they exist (for re-creation)
+DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS sessions;
+
 -- Sessions table
 CREATE TABLE sessions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id TEXT PRIMARY KEY,
   name TEXT,
   date TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
@@ -11,8 +15,8 @@ CREATE TABLE sessions (
 
 -- Posts table
 CREATE TABLE posts (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  session_id UUID REFERENCES sessions(id) ON DELETE CASCADE,
+  id TEXT PRIMARY KEY,
+  session_id TEXT REFERENCES sessions(id) ON DELETE CASCADE,
   author_id TEXT NOT NULL,
   author_avatar TEXT NOT NULL,
   author_nickname TEXT NOT NULL,
