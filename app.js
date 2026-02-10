@@ -22,13 +22,13 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const CATEGORIES = {
   learning: { label: '学び', emoji: '💡', description: '今日わかったこと、論点の結論' },
-  growth: { label: '成長', emoji: '🌱', description: '前回できなかったができるようになったこと' },
+  impression: { label: '感想', emoji: '💭', description: '授業やゼミでの感想、気づき' },
   question: { label: '疑問/未解決', emoji: '❓', description: 'まだわからないこと、新たに生まれた問い' }
 };
 
 const REACTIONS = [
   { id: 'understand', emoji: '🤝', label: 'わかる！' },
-  { id: 'niceGrowth', emoji: '🎉', label: 'ナイス成長！' },
+  { id: 'niceThought', emoji: '🎉', label: 'いい感想！' },
   { id: 'goodQuestion', emoji: '🔥', label: 'いい疑問！' },
   { id: 'helpful', emoji: '💪', label: '参考になる！' }
 ];
@@ -742,7 +742,7 @@ function PostForm({ sessionId, onPost }) {
   const pointsToEarn = category === 'question' ? POINTS.postQuestion : POINTS.post;
 
   return (
-    <div className="post-form-container">
+    <div className={`post-form-container category-selected-${category}`}>
       <div className="post-form-header">
         <span style={{ fontSize: '1.5rem' }}>📝</span>
         <h2>振り返りを投稿</h2>
@@ -766,7 +766,7 @@ function PostForm({ sessionId, onPost }) {
 
       <form onSubmit={handleSubmit}>
         <textarea
-          className="post-textarea"
+          className={`post-textarea textarea-${category}`}
           placeholder={`${CATEGORIES[category].description}...`}
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -1524,40 +1524,36 @@ function App() {
   }, [sessions, currentSessionId]);
 
   // Handle swap post positions (drag-and-drop grid swap)
-  const handleSwapPositions = useCallback((fromIndex, toIndex) => {
-    // Get current session posts based on current order
+  const handleSwapPositions = useCallback(async (fromIndex, toIndex) => {
     const sessionPosts = [...posts];
     if (fromIndex < 0 || toIndex < 0 || fromIndex >= sessionPosts.length || toIndex >= sessionPosts.length) {
       return;
     }
 
-    // Swap the posts in the array
     const fromPost = sessionPosts[fromIndex];
     const toPost = sessionPosts[toIndex];
 
-    // Assign explicit sortOrder values
-    const allPostsData = getAllPosts();
-    const fromPostGlobalIndex = allPostsData.findIndex(p => p.id === fromPost.id);
-    const toPostGlobalIndex = allPostsData.findIndex(p => p.id === toPost.id);
-
-    if (fromPostGlobalIndex === -1 || toPostGlobalIndex === -1) return;
-
     // Create sortOrder if not exist, then swap
     const now = Date.now();
-    const fromOrder = allPostsData[fromPostGlobalIndex].sortOrder ?? now - fromIndex;
-    const toOrder = allPostsData[toPostGlobalIndex].sortOrder ?? now - toIndex;
+    const fromOrder = fromPost.sortOrder ?? now - fromIndex;
+    const toOrder = toPost.sortOrder ?? now - toIndex;
 
-    allPostsData[fromPostGlobalIndex].sortOrder = toOrder;
-    allPostsData[toPostGlobalIndex].sortOrder = fromOrder;
-
-    savePosts(allPostsData);
-    setAllPosts([...allPostsData]);
+    const updatedFromPost = { ...fromPost, sortOrder: toOrder };
+    const updatedToPost = { ...toPost, sortOrder: fromOrder };
 
     // Swap in local state immediately for visual feedback
     const newPosts = [...sessionPosts];
-    newPosts[fromIndex] = toPost;
-    newPosts[toIndex] = fromPost;
+    newPosts[fromIndex] = updatedToPost;
+    newPosts[toIndex] = updatedFromPost;
     setPosts(newPosts);
+
+    // Save to Supabase
+    await savePostToDB(updatedFromPost);
+    await savePostToDB(updatedToPost);
+
+    // Refresh data
+    const updatedPosts = await getAllPostsFromDB();
+    setAllPosts(updatedPosts);
   }, [posts]);
 
   // Current session info

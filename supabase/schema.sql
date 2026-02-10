@@ -21,7 +21,7 @@ CREATE TABLE posts (
   author_avatar TEXT NOT NULL,
   author_nickname TEXT NOT NULL,
   author_points INTEGER DEFAULT 0,
-  category TEXT NOT NULL CHECK (category IN ('learning', 'growth', 'question')),
+  category TEXT NOT NULL CHECK (category IN ('learning', 'impression', 'question')),
   content TEXT NOT NULL,
   reactions JSONB DEFAULT '{}',
   reacted_users JSONB DEFAULT '{}',
