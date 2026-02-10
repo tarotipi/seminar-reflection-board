@@ -688,11 +688,11 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .note-category.learning {
@@ -700,9 +700,9 @@ body {
   color: #7b6b00;
 }
 
-.note-category.growth {
-  background: rgba(76, 175, 80, 0.3);
-  color: #2e7d32;
+.note-category.impression {
+  background: rgba(33, 150, 243, 0.3);
+  color: #1565c0;
 }
 
 .note-category.question {
@@ -712,9 +712,9 @@ body {
 
 .note-content {
   font-size: 0.95rem;
-  line-height: 1.6;
+  line-height: 1.5;
   color: var(--text-primary);
-  margin-bottom: 12px;
+  margin-bottom: 6px;
   word-wrap: break-word;
 }
 
@@ -818,7 +818,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 10px;
+  padding-top: 6px;
   border-top: 1px dashed rgba(0, 0, 0, 0.1);
 }
 
@@ -838,21 +838,21 @@ body {
 /* Reaction Bar */
 .reaction-bar {
   display: flex;
-  gap: 6px;
-  margin-top: 10px;
+  gap: 4px;
+  margin-top: 4px;
   flex-wrap: wrap;
 }
 
 .reaction-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 6px 12px;
+  gap: 3px;
+  padding: 4px 8px;
   border: none;
-  border-radius: 20px;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.8);
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   transition: all 0.2s ease;
   font-family: var(--font-main);
 }
@@ -1037,9 +1037,8 @@ body {
    ======================================== */
 
 .comments-section {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px dashed rgba(0, 0, 0, 0.1);
+  margin-top: 4px;
+  padding-top: 4px;
 }
 
 .comments-toggle-btn {
@@ -1047,13 +1046,13 @@ body {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 8px 12px;
+  padding: 5px 10px;
   background: rgba(255, 255, 255, 0.6);
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   cursor: pointer;
   font-family: var(--font-main);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
   transition: all 0.2s ease;
 }
@@ -1069,7 +1068,7 @@ body {
 }
 
 .comments-container {
-  margin-top: 12px;
+  margin-top: 6px;
   animation: fade-in 0.3s ease-out;
 }
 
